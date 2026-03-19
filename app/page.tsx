@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation'
 import { createClient } from './lib/supabase/client'
 import { useEffect, useState } from 'react'
 import { Session } from '@supabase/supabase-js'
+import dynamic from 'next/dynamic'
+const ReactJson = dynamic(() => import('react-json-view'), { ssr: false })
 
 export default function Home() {
   const router = useRouter()
@@ -35,9 +37,16 @@ export default function Home() {
       ) : session ? (
         <div className='mb-4 text-left w-full max-w-xl break-words bg-gray-100 p-4 rounded shadow'>
           <div className='font-semibold text-lg mb-2'>Session Supabase:</div>
-          <pre className='text-xs whitespace-pre-wrap'>
-            {JSON.stringify(session, null, 2)}
-          </pre>
+          <div className='text-xs'>
+            <ReactJson
+              src={session}
+              name={false}
+              collapsed={2}
+              enableClipboard={false}
+              displayDataTypes={false}
+              theme='rjv-default'
+            />
+          </div>
         </div>
       ) : (
         <div className='mb-4 text-center text-gray-400'>
