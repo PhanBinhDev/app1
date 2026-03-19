@@ -3,37 +3,45 @@
 import { useRouter } from 'next/navigation'
 import { createClient } from './lib/supabase/client'
 import { useEffect, useState } from 'react'
-import { User } from '@supabase/supabase-js'
+import { User, Session } from '@supabase/supabase-js'
 
-export default function Home() {
+const HomePage = () => {
   const router = useRouter()
-  const [user, setUser] = useState<User | null>(null)
+  const [session, setSession] = useState<Session | null>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchSession = async () => {
       const supabase = createClient()
-      const { data } = await supabase.auth.getUser()
-      setUser(data.user)
+      const { data } = await supabase.auth.getSession()
+      setSession(data.session)
+      setLoading(false)
     }
-    fetchUser()
+    fetchSession()
   }, [])
 
   const handleLogout = async () => {
     const supabase = createClient()
     await supabase.auth.signOut()
-    router.push('/')
+    router.refresh()
   }
 
   return (
     <div className='flex flex-col items-center justify-center min-h-screen gap-4'>
-      {user ? (
-        <div className='mb-4 text-center'>
-          <div className='font-semibold text-lg'>Xin chào, {user.email}</div>
-          <div className='text-sm text-gray-500'>ID: {user.id}</div>
+      {loading ? (
+        <div className='mb-4 text-center text-gray-400'>
+          Đang tải thông tin session...
+        </div>
+      ) : session ? (
+        <div className='mb-4 text-left w-full max-w-xl break-words bg-gray-100 p-4 rounded shadow'>
+          <div className='font-semibold text-lg mb-2'>Session Supabase:</div>
+          <pre className='text-xs whitespace-pre-wrap'>
+            {JSON.stringify(session, null, 2)}
+          </pre>
         </div>
       ) : (
         <div className='mb-4 text-center text-gray-400'>
-          Đang tải thông tin người dùng...
+          Không có session Supabase.
         </div>
       )}
       <button
@@ -44,3 +52,5 @@ export default function Home() {
     </div>
   )
 }
+
+export default HomePage
