@@ -25,6 +25,8 @@ export async function middleware(request: NextRequest) {
     data: { user }
   } = await supabase.auth.getUser()
 
+  console.log('Middleware - user:', user)
+
   if (!user) {
     // Chưa login → redirect về auth server
     const authUrl = new URL(

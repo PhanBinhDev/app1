@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack --port 3001",
+    "dev": "next dev --turbopack --port 3003",
+    "ngrok": "ngrok http 3003 --url strong-finch-curious.ngrok-free.app",
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint"
